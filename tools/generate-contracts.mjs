@@ -71,7 +71,7 @@ function tsObjectType(fields) {
   return `Readonly<{ ${fields.map((field) => `readonly ${field.name}: ${tsType(field)};`).join(" ")} }>`;
 }
 
-function valueForField(field, seed) {
+export function valueForField(field, seed) {
   if (field.nullable) return null;
   if (field.enum) return field.enum[0];
   switch (field.kind) {
@@ -89,6 +89,10 @@ function valueForField(field, seed) {
   }
 }
 
+export function buildPositiveFixture(runtimeModel) {
+  return Object.fromEntries(runtimeModel.fields.map((field) => [field.name, valueForField(field, runtimeModel.name)]));
+}
+
 function wrongValue(field) {
   if (field.kind === "string") return 123;
   if (field.kind === "integer" || field.kind === "number") return "not-a-number";
@@ -101,7 +105,14 @@ export function generateArtifacts(model) {
   const schemas = new Map();
   const fixtures = [];
   const typeLines = [GENERATED_HEADER.trimEnd(), ""];
-  const typeFixtureLines = [GENERATED_HEADER.trimEnd(), 'import type * as Contracts from "./contracts.js";', ""];
+  const typeFixtureLines = [
+    GENERATED_HEADER.trimEnd(),
+    'import type * as Contracts from "./contracts.js";',
+    "",
+    "type Equal<Left, Right> = (<Value>() => Value extends Left ? 1 : 2) extends (<Value>() => Value extends Right ? 1 : 2) ? true : false;",
+    "type Assert<Value extends true> = Value;",
+    "",
+  ];
 
   for (const contract of model.contracts) {
     for (const runtimeModel of contract.models) {
@@ -128,38 +139,31 @@ export function generateArtifacts(model) {
       };
       schemas.set(runtimeModel.name, schema);
 
-      const positive = Object.fromEntries(runtimeModel.fields.map((field) => [field.name, valueForField(field, runtimeModel.name)]));
-      fixtures.push({ id: `${runtimeModel.name}-positive`, contract_id: contract.document_id, model: runtimeModel.name, expected_valid: true, category: "positive", value: positive });
-      typeFixtureLines.push(`export const ${runtimeModel.name}Positive = ${JSON.stringify(positive)} as const satisfies Contracts.${runtimeModel.name};`);
+      const positive = buildPositiveFixture(runtimeModel);
+      fixtures.push({ id: `${runtimeModel.name}-positive`, contract_id: contract.document_id, model: runtimeModel.name, expected_valid: true, category: "positive", mutation: null });
 
-      const missing = structuredClone(positive);
-      delete missing[runtimeModel.fields[0].name];
-      fixtures.push({ id: `${runtimeModel.name}-missing-required`, contract_id: contract.document_id, model: runtimeModel.name, expected_valid: false, category: "missing-required", value: missing });
-      typeFixtureLines.push("// @ts-expect-error required field intentionally missing");
-      typeFixtureLines.push(`export const ${runtimeModel.name}MissingRequired = ${JSON.stringify(missing)} as const satisfies Contracts.${runtimeModel.name};`);
-
-      const additional = { ...structuredClone(positive), prohibited_extra_field: true };
-      fixtures.push({ id: `${runtimeModel.name}-additional-property`, contract_id: contract.document_id, model: runtimeModel.name, expected_valid: false, category: "additional-property", value: additional });
-
-      const wrong = structuredClone(positive);
-      const wrongField = runtimeModel.fields.find((field) => !field.nullable) ?? runtimeModel.fields[0];
-      wrong[wrongField.name] = wrongValue(wrongField);
-      fixtures.push({ id: `${runtimeModel.name}-wrong-type`, contract_id: contract.document_id, model: runtimeModel.name, expected_valid: false, category: "wrong-type", value: wrong });
+      const firstField = runtimeModel.fields[0];
+      const expectedKeys = runtimeModel.fields.map((field) => JSON.stringify(field.name)).join(" | ");
+      typeFixtureLines.push(`type ${runtimeModel.name}KeysMatch = Assert<Equal<keyof Contracts.${runtimeModel.name}, ${expectedKeys}>>;`);
+      typeFixtureLines.push(`export const ${runtimeModel.name}PositiveField: Pick<Contracts.${runtimeModel.name}, ${JSON.stringify(firstField.name)}> = ${JSON.stringify({ [firstField.name]: positive[firstField.name] })};`);
+      typeFixtureLines.push("// @ts-expect-error required fields intentionally missing");
+      typeFixtureLines.push(`export const ${runtimeModel.name}MissingRequired: Contracts.${runtimeModel.name} = {};`);
       typeFixtureLines.push("// @ts-expect-error wrong primitive type intentionally supplied");
-      typeFixtureLines.push(`export const ${runtimeModel.name}WrongType = ${JSON.stringify(wrong)} as const satisfies Contracts.${runtimeModel.name};`);
+      typeFixtureLines.push(`export const ${runtimeModel.name}WrongType: Pick<Contracts.${runtimeModel.name}, ${JSON.stringify(firstField.name)}> = ${JSON.stringify({ [firstField.name]: wrongValue(firstField) })};`);
+
+      fixtures.push({ id: `${runtimeModel.name}-missing-required`, contract_id: contract.document_id, model: runtimeModel.name, expected_valid: false, category: "missing-required", mutation: { kind: "remove", field: firstField.name } });
+      fixtures.push({ id: `${runtimeModel.name}-additional-property`, contract_id: contract.document_id, model: runtimeModel.name, expected_valid: false, category: "additional-property", mutation: { kind: "add", field: "prohibited_extra_field", value: true } });
+      const wrongField = runtimeModel.fields.find((field) => !field.nullable) ?? firstField;
+      fixtures.push({ id: `${runtimeModel.name}-wrong-type`, contract_id: contract.document_id, model: runtimeModel.name, expected_valid: false, category: "wrong-type", mutation: { kind: "set", field: wrongField.name, value: wrongValue(wrongField) } });
 
       const enumField = runtimeModel.fields.find((field) => Array.isArray(field.enum));
       if (enumField) {
-        const invalidEnum = structuredClone(positive);
-        invalidEnum[enumField.name] = "__invalid_enum__";
-        fixtures.push({ id: `${runtimeModel.name}-invalid-enum`, contract_id: contract.document_id, model: runtimeModel.name, expected_valid: false, category: "invalid-enum", value: invalidEnum });
+        fixtures.push({ id: `${runtimeModel.name}-invalid-enum`, contract_id: contract.document_id, model: runtimeModel.name, expected_valid: false, category: "invalid-enum", mutation: { kind: "set", field: enumField.name, value: "__invalid_enum__" } });
       }
 
       const versionField = runtimeModel.fields.find((field) => ["contract_version","event_version","model_version","version"].includes(field.name));
       if (versionField) {
-        const unsupported = structuredClone(positive);
-        unsupported[versionField.name] = "2.0.0";
-        fixtures.push({ id: `${runtimeModel.name}-unsupported-major`, contract_id: contract.document_id, model: runtimeModel.name, expected_valid: false, category: "unsupported-major", value: unsupported });
+        fixtures.push({ id: `${runtimeModel.name}-unsupported-major`, contract_id: contract.document_id, model: runtimeModel.name, expected_valid: false, category: "unsupported-major", mutation: { kind: "set", field: versionField.name, value: "2.0.0" } });
       }
     }
   }
