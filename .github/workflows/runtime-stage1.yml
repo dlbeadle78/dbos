@@ -1,0 +1,37 @@
+name: DBOS runtime stage one
+
+on:
+  push:
+    branches:
+      - develop/runtime-v0.2.0
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Use authorised Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.14.0
+          cache: npm
+      - name: Verify bundled npm
+        run: test "$(npm --version)" = "11.9.0"
+      - name: Clean install
+        run: npm ci
+      - name: Verify stage-one gates
+        run: npm run verify:stage1
+      - name: Upload evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dbos-runtime-stage1-evidence
+          path: reports/
+          if-no-files-found: warn
