@@ -140,8 +140,6 @@ export function generateArtifacts(model) {
       schemas.set(runtimeModel.name, schema);
 
       const positive = buildPositiveFixture(runtimeModel);
-      fixtures.push({ id: `${runtimeModel.name}-positive`, contract_id: contract.document_id, model: runtimeModel.name, expected_valid: true, category: "positive", mutation: null });
-
       const firstField = runtimeModel.fields[0];
       const expectedKeys = runtimeModel.fields.map((field) => JSON.stringify(field.name)).join(" | ");
       typeFixtureLines.push(`type ${runtimeModel.name}KeysMatch = Assert<Equal<keyof Contracts.${runtimeModel.name}, ${expectedKeys}>>;`);
@@ -151,20 +149,13 @@ export function generateArtifacts(model) {
       typeFixtureLines.push("// @ts-expect-error wrong primitive type intentionally supplied");
       typeFixtureLines.push(`export const ${runtimeModel.name}WrongType: Pick<Contracts.${runtimeModel.name}, ${JSON.stringify(firstField.name)}> = ${JSON.stringify({ [firstField.name]: wrongValue(firstField) })};`);
 
-      fixtures.push({ id: `${runtimeModel.name}-missing-required`, contract_id: contract.document_id, model: runtimeModel.name, expected_valid: false, category: "missing-required", mutation: { kind: "remove", field: firstField.name } });
-      fixtures.push({ id: `${runtimeModel.name}-additional-property`, contract_id: contract.document_id, model: runtimeModel.name, expected_valid: false, category: "additional-property", mutation: { kind: "add", field: "prohibited_extra_field", value: true } });
       const wrongField = runtimeModel.fields.find((field) => !field.nullable) ?? firstField;
-      fixtures.push({ id: `${runtimeModel.name}-wrong-type`, contract_id: contract.document_id, model: runtimeModel.name, expected_valid: false, category: "wrong-type", mutation: { kind: "set", field: wrongField.name, value: wrongValue(wrongField) } });
-
       const enumField = runtimeModel.fields.find((field) => Array.isArray(field.enum));
-      if (enumField) {
-        fixtures.push({ id: `${runtimeModel.name}-invalid-enum`, contract_id: contract.document_id, model: runtimeModel.name, expected_valid: false, category: "invalid-enum", mutation: { kind: "set", field: enumField.name, value: "__invalid_enum__" } });
-      }
-
       const versionField = runtimeModel.fields.find((field) => ["contract_version","event_version","model_version","version"].includes(field.name));
-      if (versionField) {
-        fixtures.push({ id: `${runtimeModel.name}-unsupported-major`, contract_id: contract.document_id, model: runtimeModel.name, expected_valid: false, category: "unsupported-major", mutation: { kind: "set", field: versionField.name, value: "2.0.0" } });
-      }
+      const cases = ["positive", "missing-required", "additional-property", "wrong-type"];
+      if (enumField) cases.push("invalid-enum");
+      if (versionField) cases.push("unsupported-major");
+      fixtures.push({ contract_id: contract.document_id, model: runtimeModel.name, cases });
     }
   }
 
@@ -184,7 +175,7 @@ export function generateArtifacts(model) {
   return {
     types: `${typeLines.join("\n")}\n`,
     typeFixtures: `${typeFixtureLines.join("\n")}\n`,
-    fixtures: stableJson({ fixture_version: "1.0.0", fixtures }),
+    fixtures: stableJson({ fixture_version: "1.0.0", fixture_plans: fixtures }),
     schemas,
     manifest: stableJson(manifest),
   };
