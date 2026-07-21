@@ -18,6 +18,7 @@ export async function runConformance(root = ROOT) {
   const model = await loadModel(resolve(root, "packages/contracts/model/contracts.json"));
   const fixtureSet = JSON.parse(await readFile(resolve(root, "packages/contracts/fixtures/fixtures.generated.json"), "utf8"));
   const ajv = new Ajv2020({ strict: true, allErrors: true, validateFormats: false });
+  ajv.addKeyword({ keyword: "x-dbos-trace", schemaType: "object", valid: true });
   const validators = new Map();
   for (const name of (await readdir(resolve(root, "packages/contracts/schemas"))).filter((name) => name.endsWith(".schema.json")).sort()) {
     const schema = JSON.parse(await readFile(resolve(root, "packages/contracts/schemas", name), "utf8"));
