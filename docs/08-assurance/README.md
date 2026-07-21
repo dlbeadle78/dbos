@@ -10,3 +10,4 @@ This directory records specification-level evidence for DBOS v0.1.0. It does not
 | DBOS-ASR-004 | Release validation report |
 | DBOS-ASR-005 | Future implementation entry criteria |
 | DBOS-ASR-006 | v0.2.0 ADR consistency and approval review |
+| DBOS-ASR-007 | v0.2.0 post-spike implementation readiness review |
