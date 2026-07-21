@@ -3,7 +3,7 @@
 | Field | Value |
 |---|---|
 | Document ID | DBOS-ASR-006 |
-| Status | Completed, awaiting architecture approval |
+| Status | Completed and architecture approved |
 | Review date | 2026-07-21 |
 | Package reviewed | DBOS-ADR-009–016 |
 | Prior decisions checked | DBOS-ADR-001–008 |
@@ -124,9 +124,9 @@ Internal consistency does not prove the selected technologies. The following rem
 
 **Internal consistency: PASS.** ADR-009–016 are complete, mutually consistent and compatible with DBCA v1.0.0 and frozen DBOS v0.1.0. The package may proceed to explicit architecture approval without amendment.
 
-**Implementation authorisation: WITHHELD.** This review cannot grant its own approval. In accordance with DBOS-ASR-005, production runtime code remains prohibited until:
+**Implementation authorisation: WITHHELD.** Architecture approval authorises the bounded technical spikes only. In accordance with DBOS-ASR-005, production runtime code remains prohibited until:
 
-1. the user explicitly accepts ADR-009–016;
+1. the accepted ADR-009–016 remain satisfied;
 2. SPK-01, SPK-02 and SPK-03 pass and their selected details are recorded without changing the approved semantics;
 3. the threat model, data classification/retention controls and recovery objectives are approved; and
 4. the implementation scope and acceptance-test mapping are approved.

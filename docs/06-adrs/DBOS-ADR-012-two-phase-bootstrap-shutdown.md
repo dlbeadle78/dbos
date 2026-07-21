@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | Proposed for approval |
+| Status | Accepted |
 | Decision date | 2026-07-21 |
 | Scope | Kernel construction, recovery, readiness, degradation and shutdown |
 | DBCA authority | ES-001; ES-007; ES-010; ES-011 |

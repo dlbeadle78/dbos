@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | Proposed for approval |
+| Status | Accepted |
 | Decision date | 2026-07-21 |
 | Scope | DBOS v0.2.0 Core Runtime language, runtime and module system |
 | DBCA authority | ES-000; ES-006; ES-009; STD-009 |

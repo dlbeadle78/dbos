@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | Proposed for approval |
+| Status | Accepted |
 | Decision date | 2026-07-21 |
 | Scope | Owner mutation, event commitment, delivery and mandatory audit acceptance |
 | DBCA authority | ES-006; ES-007; ES-010; ES-011 |

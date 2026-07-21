@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | Proposed for approval |
+| Status | Accepted |
 | Decision date | 2026-07-21 |
 | Scope | v0.2.0 identity, authentication boundary and actor attribution |
 | DBCA authority | ES-004; ES-010; ES-011; ADR-003; ADR-005 |

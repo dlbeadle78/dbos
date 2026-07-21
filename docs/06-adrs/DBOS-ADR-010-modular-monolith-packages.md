@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | Proposed for approval |
+| Status | Accepted |
 | Decision date | 2026-07-21 |
 | Scope | Runtime topology, repository structure and module ownership |
 | DBCA authority | ARC-001; ARC-005; ES-001; ES-006 |

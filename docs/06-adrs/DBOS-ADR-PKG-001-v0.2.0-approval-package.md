@@ -3,7 +3,9 @@
 | Field | Value |
 |---|---|
 | Package ID | DBOS-ADR-PKG-001 |
-| Status | Ready for approval |
+| Status | Approved |
+| Approval date | 2026-07-21 |
+| Approval scope | ADR-009–016; bounded technical spikes only |
 | Target | DBOS v0.2.0 Core Runtime |
 | DBCA baseline | v1.0.0 at `035377ca6e5b72bb732d59bc9b528bf337a0c274` |
 | DBOS baseline | v0.1.0 at `d142b25c361e809c90edca74013d2bb13b6f5065` |
@@ -11,7 +13,7 @@
 
 ## Approval scope
 
-This package requests approval of implementation-boundary decisions only. It does not approve runtime code, dependency installation, production data, external integration, release tagging or publication.
+This package records approval of implementation-boundary decisions only. It does not approve runtime code, dependency installation, production data, external integration, release tagging or publication.
 
 The package preserves DBCA as architectural authority and DBOS v0.1.0 as the frozen Kernel semantic baseline.
 
@@ -43,16 +45,12 @@ DBOS-ASR-006 confirms:
 
 ## Approval effect
 
-Approval changes ADR-009–016 from `Proposed for approval` to `Accepted` in a subsequent documentation-only commit. It authorises the three bounded technical spikes and the remaining implementation-entry assurance work.
+Approval changed ADR-009–016 from `Proposed for approval` to `Accepted` in a documentation-only commit. It authorises the three bounded technical spikes and the remaining implementation-entry assurance work.
 
 Approval does **not** authorise production runtime implementation. That authority remains withheld until every blocker in DBOS-ASR-006 and DBOS-ASR-005 is closed and the implementation scope is explicitly approved.
 
 Rejection or requested amendment keeps the affected ADR proposed. Any material amendment requires the collective consistency review to run again.
 
-## Approval choices
+## Recorded approval
 
-1. **Approve ADR-009–016 as a package:** proceed to a documentation-only acceptance commit, then the three bounded spikes and remaining assurance gates.
-2. **Approve with named amendments:** revise only the identified decisions and repeat DBOS-ASR-006.
-3. **Reject:** retain the readiness assessment but do not perform technical spikes or runtime implementation.
-
-No approval is inferred from silence or from completion of this package.
+ADR-009–016 were explicitly approved as a package on 2026-07-21. The approved next activity is limited to SPK-01, SPK-02, SPK-03 and their readiness review. Runtime implementation remains prohibited until separately and explicitly approved.

@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | Proposed for approval |
+| Status | Accepted |
 | Decision date | 2026-07-21 |
 | Scope | Secret handling, data classification, logging, events, audit and persistence |
 | DBCA authority | PRI-001 principle 3; ARC-008; ARC-009; ES-010; ES-011 |

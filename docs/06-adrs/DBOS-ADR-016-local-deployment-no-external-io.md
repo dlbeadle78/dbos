@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | Proposed for approval |
+| Status | Accepted |
 | Decision date | 2026-07-21 |
 | Scope | v0.2.0 deployment, network, process and side-effect boundaries |
 | DBCA authority | ES-004; ES-010; ES-011; ADR-004; ADR-010 |
