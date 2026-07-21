@@ -15,7 +15,8 @@ async function visit(dir) {
     else if (extensions.has(extname(entry.name)) || [".nvmrc",".node-version",".npmrc",".editorconfig",".gitignore"].includes(entry.name)) {
       const original = await readFile(path, "utf8");
       let next = original.replace(/\r\n?/gu, "\n").replace(/[ \t]+$/gmu, "");
-      if (path.endsWith("packages/contracts/model/contracts.json")) next = `${JSON.stringify(JSON.parse(next))}\n`;
+      const generatedJson = path.includes("packages/contracts/schemas/") || path.includes("packages/contracts/fixtures/") || path.endsWith("packages/contracts/generated-manifest.json");
+      if (path.endsWith("packages/contracts/model/contracts.json") || generatedJson) next = `${JSON.stringify(JSON.parse(next))}\n`;
       else if (entry.name.endsWith(".json")) next = `${JSON.stringify(JSON.parse(next), null, 2)}\n`;
       else if (!next.endsWith("\n")) next += "\n";
       if (next !== original) {

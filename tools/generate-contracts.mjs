@@ -2,33 +2,20 @@ import { mkdir, rm, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { loadModel, ROOT } from "./lib/model.mjs";
-import { stableJson } from "./lib/stable-json.mjs";
+import { compactJson } from "./lib/stable-json.mjs";
 
 const GENERATED_HEADER = "// GENERATED FROM packages/contracts/model/contracts.json. DO NOT EDIT.\n";
 
 function schemaForField(field) {
   let schema;
   switch (field.kind) {
-    case "string":
-      schema = { type: "string" };
-      break;
-    case "integer":
-      schema = { type: "integer" };
-      break;
-    case "number":
-      schema = { type: "number" };
-      break;
-    case "boolean":
-      schema = { type: "boolean" };
-      break;
-    case "array":
-      schema = { type: "array", items: schemaForItem(field.items ?? { kind: "string" }) };
-      break;
-    case "object":
-      schema = objectSchema(field.properties ?? []);
-      break;
-    default:
-      throw new Error(`Unsupported field kind: ${field.kind}`);
+    case "string": schema = { type: "string" }; break;
+    case "integer": schema = { type: "integer" }; break;
+    case "number": schema = { type: "number" }; break;
+    case "boolean": schema = { type: "boolean" }; break;
+    case "array": schema = { type: "array", items: schemaForItem(field.items ?? { kind: "string" }) }; break;
+    case "object": schema = objectSchema(field.properties ?? []); break;
+    default: throw new Error(`Unsupported field kind: ${field.kind}`);
   }
   if (field.enum) schema.enum = [...field.enum];
   if (field.minimum !== undefined) schema.minimum = field.minimum;
@@ -118,9 +105,7 @@ export function generateArtifacts(model) {
     for (const runtimeModel of contract.models) {
       typeLines.push(`/** ${runtimeModel.description} Trace: ${contract.document_id} ${contract.source_path} */`);
       typeLines.push(`export interface ${runtimeModel.name} {`);
-      for (const field of runtimeModel.fields) {
-        typeLines.push(`  readonly ${field.name}: ${tsType(field)};`);
-      }
+      for (const field of runtimeModel.fields) typeLines.push(`  readonly ${field.name}: ${tsType(field)};`);
       typeLines.push("}", "");
 
       const schema = {
@@ -149,7 +134,6 @@ export function generateArtifacts(model) {
       typeFixtureLines.push("// @ts-expect-error wrong primitive type intentionally supplied");
       typeFixtureLines.push(`export const ${runtimeModel.name}WrongType: Pick<Contracts.${runtimeModel.name}, ${JSON.stringify(firstField.name)}> = ${JSON.stringify({ [firstField.name]: wrongValue(firstField) })};`);
 
-      const wrongField = runtimeModel.fields.find((field) => !field.nullable) ?? firstField;
       const enumField = runtimeModel.fields.find((field) => Array.isArray(field.enum));
       const versionField = runtimeModel.fields.find((field) => ["contract_version","event_version","model_version","version"].includes(field.name));
       const cases = ["positive", "missing-required", "additional-property", "wrong-type"];
@@ -175,9 +159,9 @@ export function generateArtifacts(model) {
   return {
     types: `${typeLines.join("\n")}\n`,
     typeFixtures: `${typeFixtureLines.join("\n")}\n`,
-    fixtures: stableJson({ fixture_version: "1.0.0", fixture_plans: fixtures }),
+    fixtures: compactJson({ fixture_version: "1.0.0", fixture_plans: fixtures }),
     schemas,
-    manifest: stableJson(manifest),
+    manifest: compactJson(manifest),
   };
 }
 
@@ -196,7 +180,7 @@ export async function writeArtifacts(outputRoot = ROOT) {
   await writeFile(resolve(srcDir, "contracts.ts"), generated.types, "utf8");
   await writeFile(resolve(srcDir, "type-fixtures.generated.ts"), generated.typeFixtures, "utf8");
   for (const [name, schema] of generated.schemas) {
-    await writeFile(resolve(schemaDir, `${name}.schema.json`), stableJson(schema), "utf8");
+    await writeFile(resolve(schemaDir, `${name}.schema.json`), compactJson(schema), "utf8");
   }
   await writeFile(resolve(fixtureDir, "fixtures.generated.json"), generated.fixtures, "utf8");
   await writeFile(resolve(outputRoot, "packages/contracts/generated-manifest.json"), generated.manifest, "utf8");
@@ -204,6 +188,4 @@ export async function writeArtifacts(outputRoot = ROOT) {
 }
 
 const isMain = process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url);
-if (isMain) {
-  await writeArtifacts(ROOT);
-}
+if (isMain) await writeArtifacts(ROOT);
