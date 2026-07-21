@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0.0",
+  "direct_dependencies": {
+    "typescript": "7.0.2",
+    "ajv": "8.20.0"
+  },
+  "approved_licences": [
+    "MIT",
+    "Apache-2.0",
+    "BSD-2-Clause",
+    "BSD-3-Clause",
+    "ISC"
+  ],
+  "vulnerability_threshold": "high",
+  "publication": "prohibited",
+  "external_runtime_io": "prohibited"
+}

@@ -1,0 +1,38 @@
+{
+  "name": "@dbos/runtime-workspace",
+  "version": "0.2.0-development",
+  "private": true,
+  "type": "module",
+  "packageManager": "npm@11.9.0",
+  "engines": {
+    "node": "=24.14.0",
+    "npm": "=11.9.0"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "preinstall": "node tools/check-toolchain.mjs",
+    "clean": "node tools/clean.mjs",
+    "format": "node tools/format.mjs --write",
+    "format:check": "node tools/format.mjs",
+    "lint": "node tools/lint.mjs",
+    "typecheck": "tsc -b --pretty false",
+    "build": "tsc -b --pretty false",
+    "generate": "node tools/generate-contracts.mjs",
+    "check:generated": "node tools/check-generated.mjs",
+    "check:boundaries": "node tools/check-boundaries.mjs",
+    "check:traceability": "node tools/check-traceability.mjs",
+    "test": "node --test",
+    "conformance": "node tools/run-conformance.mjs",
+    "dependency:inventory": "node tools/dependency-inventory.mjs",
+    "licence:check": "node tools/check-licences.mjs",
+    "vulnerability:check": "npm audit --audit-level=high",
+    "release:manifest": "node tools/generate-release-manifest.mjs",
+    "verify:stage1": "npm run format:check && npm run lint && npm run check:boundaries && npm run check:generated && npm run typecheck && npm run test && npm run conformance && npm run check:traceability && npm run dependency:inventory && npm run licence:check && npm run vulnerability:check && npm run release:manifest"
+  },
+  "devDependencies": {
+    "ajv": "8.20.0",
+    "typescript": "7.0.2"
+  }
+}

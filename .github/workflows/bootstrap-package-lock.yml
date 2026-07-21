@@ -1,0 +1,32 @@
+name: Bootstrap DBOS package lock
+
+on:
+  push:
+    branches:
+      - develop/runtime-v0.2.0
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  generate-lock:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Use authorised Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.14.0
+      - name: Verify bundled npm
+        run: test "$(npm --version)" = "11.9.0"
+      - name: Generate exact lockfile
+        run: npm install --package-lock-only --ignore-scripts
+      - name: Upload lockfile
+        uses: actions/upload-artifact@v4
+        with:
+          name: dbos-package-lock
+          path: package-lock.json
+          if-no-files-found: error

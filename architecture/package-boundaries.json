@@ -1,0 +1,21 @@
+{
+  "schema_version": "1.0.0",
+  "permitted_direction": "entry point -> kernel-runtime -> subsystem owners -> ports -> contracts",
+  "packages": {
+    "@dbos/contracts": {
+      "path": "packages/contracts",
+      "may_import": []
+    },
+    "@dbos/conformance": {
+      "path": "packages/conformance",
+      "may_import": [
+        "@dbos/contracts"
+      ]
+    }
+  },
+  "forbidden_patterns": [
+    "/src/",
+    "/internal/",
+    "../packages/"
+  ]
+}

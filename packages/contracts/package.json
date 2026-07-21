@@ -1,0 +1,21 @@
+{
+  "name": "@dbos/contracts",
+  "version": "0.2.0-development",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./schemas/*": "./schemas/*"
+  },
+  "files": [
+    "dist",
+    "schemas"
+  ],
+  "scripts": {
+    "build": "tsc -b"
+  },
+  "dependencies": {}
+}
