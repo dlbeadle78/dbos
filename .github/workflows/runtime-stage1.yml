@@ -26,8 +26,30 @@ jobs:
         run: test "$(npm --version)" = "11.9.0"
       - name: Clean install
         run: npm ci
-      - name: Verify stage-one gates
-        run: npm run verify:stage1
+      - name: Check formatting
+        run: npm run format:check
+      - name: Lint and prohibited capabilities
+        run: npm run lint
+      - name: Check package boundaries
+        run: npm run check:boundaries
+      - name: Check deterministic generation
+        run: npm run check:generated
+      - name: Type-check and build
+        run: npm run typecheck
+      - name: Run automated tests
+        run: npm test
+      - name: Run conformance
+        run: npm run conformance
+      - name: Check traceability
+        run: npm run check:traceability
+      - name: Generate dependency inventory
+        run: npm run dependency:inventory
+      - name: Check licences
+        run: npm run licence:check
+      - name: Check vulnerabilities
+        run: npm run vulnerability:check
+      - name: Generate development manifest
+        run: npm run release:manifest
       - name: Upload evidence
         if: always()
         uses: actions/upload-artifact@v4
