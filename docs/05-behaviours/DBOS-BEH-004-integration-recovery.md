@@ -20,6 +20,14 @@
 | INT-08 | CTR-002 R1 | Caller uses unsupported major component contract | Request rejects before work | Best-effort interpretation |
 | INT-09 | CTR-003 R2 | Non-owner publishes `TaskCompleted` | Event rejects for producer ownership | False owner event accepted |
 | INT-10 | IF-001 postconditions | Query filters inaccessible records | Limitations state filtering; no absence claim | Empty result presented as complete reality |
+| INT-11 | CTR-001 R1 | Record title changes without changing identity | Stable record ID and incremented version are returned | New identity for cosmetic change |
+| INT-12 | CTR-001 R3 | Source time is unavailable | Record stores explicit unknown with reason | Timestamp guessed |
+| INT-13 | CTR-002 R3 | Component receives valid request then attempts a wider target | Wider operation is refused and audited | Scope broadening |
+| INT-14 | CTR-002 R4 | Identical mutation envelope repeats after lost response | Original semantic result is returned | Duplicate mutation |
+| INT-15 | CTR-002 R5 | Component succeeds with one declared limitation | Response is `succeeded-with-limitations` and names it | Unqualified success |
+| INT-16 | CTR-002 R6 | Failure detail contains sensitive source content | Safe diagnostic retains correlation and redacts content | Sensitive diagnostic exposed |
+| INT-17 | CTR-003 R1; CTR-003 R3 | Committed event is edited or omits recorded time | Edit/invalid event is rejected and audited | Mutable or timeless event |
+| INT-18 | CTR-003 R7 | Consumer receives unsupported event major version | Delivery is rejected or dead-lettered before processing | Best-effort reinterpretation |
 
 ## Failure containment and recovery
 
@@ -46,4 +54,3 @@
 | REL-04 | GOV-001 R6 | Repository content scan runs | No executable application source or Assessment Intelligence implementation | Hidden implementation code |
 | REL-05 | GOV-001 R7 | Requirement/test traceability is reviewed | Every applicable MUST has behaviour coverage or declared gap | Untested requirement treated as passed |
 | REL-06 | GOV-001 R8 | Final validation is performed | Completeness, consistency, boundary and negative results recorded | Version released on document count alone |
-

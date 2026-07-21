@@ -14,6 +14,8 @@
 | WS-02 | KRN-002 R3 | Member queries workspace containing one inaccessible case | View omits protected case and states filtering limitation | Omission stated as non-existence |
 | WS-03 | KRN-002 R4 | Active child mission exists when workspace is archived | Workspace archives; mission state is unchanged | Child mission cancelled |
 | WS-04 | KRN-002 R5 | Membership is revoked during an active view session | New reads stop and in-flight access review is emitted | Access continues to expiry without review |
+| WS-05 | KRN-002 R1 | Create repeats a stable identity already in use | Duplicate identity fails and original remains | Second workspace with same identity |
+| WS-06 | KRN-002 R6 | Workspace default permits an action denied by a narrower grant | Denial controls and default is ignored | Default widens authority |
 | CF-01 | KRN-003 R1–R2 | User-declared case entry is registered | Provenance and temporal fields persist | Entry labelled verified |
 | CF-02 | KRN-003 R3 | Two sources assert incompatible current status | Both versions remain and dispute surfaces | Later record silently overwrites earlier one |
 | CF-03 | KRN-003 R4 | No case entry mentions a condition | View reports no record found, not condition absent | Absence claim |
@@ -30,6 +32,7 @@
 | PRJ-03 | KRN-004 R3 | Approved scope changes | Impact and authorised new baseline recorded | Original baseline rewritten |
 | PRJ-04 | KRN-004 R4 | Child status is old and external source inaccessible | Projection states stale source and unknown current status | Current status asserted |
 | PRJ-05 | KRN-004 R5 | Project view receives task completion event | Projection updates; task owner record remains unchanged | Project writes task state |
+| PRJ-06 | KRN-004 R6 | All child work closes but one project acceptance measure lacks evidence | Project remains verifying or blocked | Project completes by child count alone |
 | TSK-01 | KRN-008 R1 | Task has no acceptance condition | Creation or readiness blocks | Executable task |
 | TSK-02 | KRN-008 R2 | Mandatory predecessor is blocked | Dependant task remains planned/blocked | Ready state |
 | TSK-03 | KRN-008 R3 | Non-idempotent side effect lacks reconciliation rule | Readiness fails | Task starts |
@@ -48,14 +51,17 @@
 | CTX-04 | KRN-005 R4 | Two current sources conflict | Package becomes conflicted/limited | Rank silently resolves truth |
 | CTX-05 | KRN-005 R5 | Summary budget is small | Constraints, exclusions and unknowns remain even if topics compress | Decisive negative constraint omitted |
 | CTX-06 | KRN-005 R6 | Source version changes materially | Existing package invalidates and refresh creates new version | Old package remains valid for new work |
+| CTX-07 | KRN-005 R7 | Context source contains unrelated sensitive details | Package excludes or redacts unrelated content | Full source delivered |
 | MEM-01 | KRN-006 R1–R2 | One user edit is proposed as durable preference | Candidate retains local scope pending evidence | Global rule automatically created |
 | MEM-02 | KRN-006 R3 | Retrieved memory says a deadline but has expired | Result labels expired and requires verification | Current deadline asserted |
 | MEM-03 | KRN-006 R5 | Active memory conflicts with new verified source | Conflict reduces reliance and informs Context Manager | Memory wins by age or convenience |
 | MEM-04 | KRN-006 R6 | Forget request conflicts with legal hold | Content remains restricted and reason is recorded | Destructive forgetting |
+| MEM-05 | KRN-006 R7 | Memory candidate contains unnecessary sensitive data | Candidate is minimised, quarantined or rejected | Unnecessary data retained |
 | DEC-01 | KRN-007 R1–R2 | System recommendation exists without Dave's confirmation | State remains awaiting-owner | Recommendation recorded as Dave's decision |
 | DEC-02 | KRN-007 R3 | Decision rationale source is unavailable | Record states unavailable rationale reference; no invention | Fabricated reasoning |
 | DEC-03 | KRN-007 R5 | Query asks decision as of time before supersession | Historical applicable decision returned | Current decision retroactively applied |
 | DEC-04 | KRN-007 R6 | Late evidence overlaps decision validity | Decision enters review and affected missions are identified | No impact action |
+| DEC-05 | KRN-007 R4 | Architecture decision is recorded without ADR or Dave's approval | Record remains proposed/blocked and names required authority | Architecture change becomes effective |
 
 ## Timeline
 
@@ -67,4 +73,4 @@
 | TIM-04 | KRN-009 R5 | Evidence recorded late overlaps completed decision interval | Overlap event identifies decision | Retroactive overwrite |
 | TIM-05 | KRN-009 R6 | Due-trigger evaluation repeats | One semantic due event for rule and instant | Duplicate notification cascade |
 | TIM-06 | KRN-009 R7 | Report asks for calendar commitments with no calendar adapter | View states inaccessible source | Complete-calendar claim |
-
+| TIM-07 | KRN-009 R4 | Material event time is corrected | New temporal record supersedes old and prior reliance remains reconstructable | Prior time overwritten |
