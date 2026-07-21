@@ -12,3 +12,4 @@ This directory records specification-level evidence for DBOS v0.1.0. It does not
 | DBOS-ASR-006 | v0.2.0 ADR consistency and approval review |
 | DBOS-ASR-007 | v0.2.0 post-spike implementation readiness review |
 | DBOS-ASR-008 | v0.2.0 implementation assurance closure decisions |
+| DBOS-ASR-009 | v0.2.0 runtime implementation authorisation report |
